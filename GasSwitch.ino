@@ -23,15 +23,17 @@ void loop() {
 
 class GasSwitch {
   public:
-    struct {
-      string gasName;
+    struct Gas{
+      String gasName;
       int gasValve;
-    } 
-    Argon = {.gasName="Argon", .gasValve=0},
-    Hydrogen = {.gasName="Hydrogen", .gasValve=1},
-    Helium = {.gasName="Helium", .gasValve=2},
-    Nitrogen = {.gasName="Nitrogen", .gasValve=3};
-    GasSwitch(Gas InitialGas)
+    };
+    Gas Argon = {.gasName="Argon", .gasValve=0};
+    Gas Hydrogen = {.gasName="Hydrogen", .gasValve=1};
+    Gas Helium = {.gasName="Helium", .gasValve=2};
+    Gas Nitrogen = {.gasName="Nitrogen", .gasValve=3};
+    GasSwitch(Gas InitialGas){
+
+    }
   private:
 
 };
