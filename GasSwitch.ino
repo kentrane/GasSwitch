@@ -34,6 +34,13 @@ class GasSwitch {
     GasSwitch(Gas InitialGas){
 
     }
+    int SetGas(Gas GasSetting){
+
+    }
+    Gas GetGas(){
+      
+    }
+
   private:
 
 };
