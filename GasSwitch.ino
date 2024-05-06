@@ -17,6 +17,7 @@ class GasSwitch {
     Gas Nitrogen = {.gasName="Nitrogen", .gasValve=5};
     Gas Oxygen = {.gasName="Oxygen", .gasValve=6};
     Gas Neon = {.gasName="Neon", .gasValve=7};
+    Gas Flush = {.gasName="Flushing", .gasValve=8};
 
     GasSwitch(){
 
@@ -36,7 +37,7 @@ class GasSwitch {
         *     2.  Vent gas
         *     3.  Turn on next gas
         */
-      if(GasSetting.gasValve== -1){
+      if(GasSetting.gasValve == -1){
         //Turn all off
         for(int i = 2; i <= 8; i++){
           digitalWrite(i,LOW);
@@ -47,10 +48,13 @@ class GasSwitch {
         for(int i = 2; i <= 8; i++){
           digitalWrite(i,LOW);
         }
-        digitalWrite(8,HIGH);
+        //Flush
+        digitalWrite(Flush.gasValve, HIGH);
         delay(500);
-        digitalWrite(8,LOW);
+        digitalWrite(Flush.gasValve, LOW);
 
+        //Turn on gas we want
+        digitalWrite(GasSetting.gasValve, HIGH);
       }
     }
     int PrintGas(Gas GasToPrint){
