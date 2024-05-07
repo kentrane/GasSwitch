@@ -20,7 +20,6 @@ class GasSwitch {
     Gas Flush = {.gasName="Flushing", .gasValve=8};
 
     GasSwitch(){
-
       /* Initialize IO */
       //Pins = 2, 3, 4, 5, 6, 7, 8 = Gas 0, 1, 2, 3, 4, 5 + vent
       for(int i = 2; i <= 8; i++){
@@ -30,31 +29,29 @@ class GasSwitch {
       /* Set the gas to the be closed */
       SetGas(None);
     }
+
     int SetGas(Gas GasSetting){
-        /*  
-        *   To set the gas:
-        *     1.  Turn off current gas 
-        *     2.  Vent gas
-        *     3.  Turn on next gas
-        */
       if(GasSetting.gasValve == -1){
         //Turn all off
         for(int i = 2; i <= 8; i++){
           digitalWrite(i,LOW);
         }
+        CurrentGas = GasSetting;
       }
       else{
         //Turn all off
         for(int i = 2; i <= 8; i++){
           digitalWrite(i,LOW);
         }
-        //Flush
-        digitalWrite(Flush.gasValve, HIGH);
-        delay(500);
-        digitalWrite(Flush.gasValve, LOW);
-
         //Turn on gas we want
         digitalWrite(GasSetting.gasValve, HIGH);
+        delay(20);
+        //Flush
+        digitalWrite(Flush.gasValve, HIGH);
+        delay(200);
+        digitalWrite(Flush.gasValve, LOW);
+        delay(20);
+        CurrentGas = GasSetting;
       }
     }
     int PrintGas(Gas GasToPrint){
@@ -75,23 +72,54 @@ class GasSwitch {
     Gas CurrentGas = None;
 };
 
-
+String inputString = "";      // a String to hold incoming data
+bool stringComplete = false;  // whether the string is complete
 GasSwitch gs;
 void setup() {
   Serial.begin(115200);
-      matrix.begin();
-      matrix.play(true);
+  // reserve 200 bytes for the inputString:
+  inputString.reserve(200);
+  matrix.begin();
+  matrix.play(true);
 } 
 
-
-void loop() {
-  gs.PrintGas(gs.Argon);
-  delay(100);
-  gs.PrintGas(gs.Hydrogen);
-  delay(100);
-  gs.PrintGas(gs.Helium);
-  delay(100);
-  gs.PrintGas(gs.Nitrogen);
-  delay(100);
+void loop() {  
+  if (stringComplete) {
+    Serial.println(inputString);
+    if(inputString == "argon\n" || inputString == "Argon\n"){
+      Serial.println("Setting gas Argon");
+      gs.SetGas(gs.Argon);
+      //gs.PrintGas(gs.Argon);
+    }
+    else if(inputString == "hydrogen\n" || inputString == "Hydrogen\n"){
+      Serial.println("Setting gas Hydrogen");
+      gs.SetGas(gs.Hydrogen);
+      //gs.PrintGas(gs.Hydrogen);
+    }
+    else if(inputString == "helium\n" || inputString == "Helium\n"){
+      Serial.println("Setting gas Helium");
+      gs.SetGas(gs.Helium);
+      //gs.PrintGas(gs.Helium);
+    }
+    else{
+      Serial.println("Didn't understand...");
+    }
+    // clear the string:
+    inputString = "";
+    stringComplete = false;
+  }
+  if(Serial.available() > 0) {
+    while (Serial.available()) {
+      // get the new byte:
+      char inChar = (char)Serial.read();
+      // add it to the inputString:
+      inputString += inChar;
+      // if the incoming character is a newline, set a flag so the main loop can
+      // do something about it:
+      if (inChar == '\n') {
+        stringComplete = true;
+      }
+    }
+  }
 }
 
