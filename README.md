@@ -2,4 +2,5 @@
 Arduino code to switch between gasses in a linear device
 
 Operates with 7 external valves for switching the flow. 6 different gasses and 1 to vent the system.
-Works with [https://github.com/kentrane/ArduinoGasGUI]
+
+Works with GUI on windows machines[https://github.com/kentrane/ArduinoGasGUI]
